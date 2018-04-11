@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script>
+    $(window).on('load', function () {
+    fetch('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1').then(function(response) {
+        if (response.status != 200) {
+          window.alert("Sorry, nothing matches those search terms.  Try another search, or use the panel on the left.");
+          return;
+        }
+
+        response.json().then(function(data) {
+          let api = data;
+          let deckID = api.deck_id;
+          
+          fetch('https://deckofcardsapi.com/api/deck/'+deckID+'/draw/?count=52').then(function(response) {
+              if (response.status != 200) {
+                window.alert("Sorry, nothing matches those search terms.  Try another search, or use the panel on the left.");
+                return;
+              }
+
+              response.json().then(function(data) {
+                let firstDeal = data.cards;
+                let card1P1 = `<img src="${firstDeal[0].images.png}" />`;
+                let card2P1 = `<img src="${firstDeal[1].images.png}" />`;
+                let card1P2 = `<img src="${firstDeal[2].images.png}" />`;
+                let card2P2 = `<img src="${firstDeal[3].images.png}" />`;
+                document.getElementById('yourActualCards').innerHTML += card1P1;
+                document.getElementById('yourActualCards').innerHTML += card1P2;
+                document.getElementById('hisActualCards').innerHTML += card2P1;
+                document.getElementById('hisActualCards').innerHTML += card2P2;
+                console.log(firstDeal);
+                let hand1 = [];
+                let hand2 = [];
+          for (var i = 0; i < firstDeal.length; i++) {
+                  let value = parseInt(firstDeal[i].value);
+                  if (firstDeal[i].value == "JACK" || firstDeal[i].value == "QUEEN" || firstDeal[i].value == "KING"){
+                    value = 10;
+                  }
+                  if(firstDeal[i].value == "ACE"){
+                    value = 11;
+                  }
+                  if(i == 0 || i == 2){
+                    hand1.push(value)
+                  }
+                  if(i == 1 || i == 3){
+                    hand2.push(value)
+                  }
+                }
+                let sliced = firstDeal.slice(3);
+                console.log(sliced);
+                console.log(hand1);
+                console.log(hand2);
+                if(hand1[0]==11 && hand1[1]==11){
+                  hand1[0] = 1;
+                }
+                if(hand2[0]==11 && hand2[1]==11){
+                  hand2[0] = 1;
+                }
+                let iteration = 1000000;
+                let testDeck = [2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,8,8,8,8,9,9,9,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,11,11,11];
+                let testDeck2 = [2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,8,8,8,8,9,9,9,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,11,11,11];
+                
+                let index_11 = testDeck2.indexOf(hand1[0])
+                let index_22 = testDeck2.indexOf(hand1[1])
+                let index_33 = testDeck2.indexOf(hand2[0])
+                testDeck2.splice(index_11, 1);
+                testDeck2.splice(index_22, 1);
+                testDeck2.splice(index_33, 1);
+    
+                document.getElementById('opp1').innerHTML = "Your opponent is showing a value of: "+hand2[0]+"";
+                
+                let probability21_player2 = 0;
+                let probability21_after2_player2 = 0;
+                for(var i=0; i < iteration; i++){
+                  let newCard_02 = testDeck2[Math.floor(Math.random()*testDeck2.length)];
+                  let newCard_03 = testDeck2[Math.floor(Math.random()*testDeck2.length)];
+                  let player2Sum = newCard_02 + hand2[0];
+                  let player2Sum2 = newCard_02 + hand2[0] + newCard_03;
+                  if ( player2Sum <= 21 && player2Sum >= 16){
+                    probability21_player2 = probability21_player2 + 1;
+                  }
+                  if ( player2Sum2 <= 21 && player2Sum2 >= 16){
+                    probability21_after2_player2 = probability21_after2_player2 + 1;
+                  }
+                }
+                
+                let oppPercent = Math.round((probability21_player2/iteration)*100)+"%";
+                let oppPercent2 = Math.round((probability21_after2_player2/iteration)*100)+"%";
+                
+                document.getElementById('oppPercent').innerHTML = "There is a "+oppPercent+" chance that your opponent's value is between 16 and 21.";
+                console.log(oppPercent);
+                document.getElementById('oppDraw').innerHTML = "There is a "+oppPercent2+" chance that your opponent's value will be between 16 and 21 if he draws an additional card.";
+                console.log(oppPercent2);
+                  let index_1 = testDeck.indexOf(hand1[0])
+                  let index_2 = testDeck.indexOf(hand1[1])
+                  let index_3 = testDeck.indexOf(hand2[0])
+                  let index_4 = testDeck.indexOf(hand2[1])
+                testDeck.splice(index_1, 1);
+                testDeck.splice(index_2, 1);
+                testDeck.splice(index_3, 1);
+                testDeck.splice(index_4, 1);
+                console.log(testDeck);
+              
+                let player1Sum = hand1[0] + hand1[1];
+                console.log(player1Sum);
+                let fifteen = 0;
+                let sixteen = 0;
+                let seventeen = 0;
+                let eighteen = 0;
+                let nineteen = 0;
+                let twenty = 0;
+                let twentyone = 0;
+              
+                if(player1Sum >= 15){
+                  document.getElementById('yourTotal').innerHTML = "Your current total is:"+player1Sum+"";
+                  let player1Diff_01 = 21 - player1Sum;
+                  let numberOfTimes = 0;
+                  for(var i=0; i < iteration; i++){
+                    let newCard_01 = testDeck[Math.floor(Math.random()*testDeck.length)];
+                    let player1Sum_02 = newCard_01 + hand1[0] + hand1[1];
+                    if ( player1Sum_02 <= 21 ){
+                      numberOfTimes = numberOfTimes + 1;
+                    }
+                  }
+                  let percent8 = Math.round((numberOfTimes/iteration)*100)+"%";
+                  document.getElementById('cardsYouNeed').innerHTML = "If you draw, the probability of not going over 21 is: "+percent8+"";
+                }
+                if (player1Sum < 15){
+                let player1Diff_1 = 15 - player1Sum;
+                let playerDiff_2 = player1Diff_1 + 1;
+              
+                let playerDiff_3 = player1Diff_1 + 2;
+                let playerDiff_4 = player1Diff_1 + 3;
+                let playerDiff_5 = player1Diff_1 + 4;
+                let playerDiff_6 = player1Diff_1 + 5;
+                let playerDiff_7 = player1Diff_1 + 6;
+                if(playerDiff_7>11){
+                  playerDiff_7 = 11;
+                }
+              
+              
+                for(var i=0; i < iteration; i++){
+                  let newCard = testDeck[Math.floor(Math.random()*testDeck.length)];
+                  let player1Sum2 = newCard + hand1[0] + hand1[1];
+                  if (player1Sum2 == 15){
+                    fifteen = fifteen + 1;
+                  }
+                  if (player1Sum2 == 16){
+                    sixteen = sixteen + 1;
+                  }
+                  if (player1Sum2 == 17){
+                    seventeen = seventeen + 1;
+                  }
+                  if (player1Sum2 == 18){
+                    eighteen = eighteen + 1;
+                  }
+                  if (player1Sum2 == 19){
+                    nineteen = nineteen + 1;
+                  }
+                  if (player1Sum2 == 20){
+                    twenty = twenty + 1;
+                  }
+                  if (player1Sum2 == 21){
+                    twentyone = twentyone + 1;
+                  }
+                  }
+                  
+                  let cardsNeededP1 = [];
+                  for (var i = 0; i < sliced.length; i++) {
+                    if ( sliced[i].value <= playerDiff_7 && sliced[i].value >= player1Diff_1 ){
+                      cardsNeededP1.push(sliced[i])
+                    }
+                    if ( sliced[i].value == "JACK" || sliced[i].value == "QUEEN" || sliced[i].value == "KING") {
+                      if ( playerDiff_7 == 10 || playerDiff_6 == 10 || playerDiff_5 == 10 || playerDiff_4 == 10 || playerDiff_3 == 10 || playerDiff_2 == 10 || player1Diff_1 == 10){
+                        cardsNeededP1.push(sliced[i])
+                      }
+                    }
+                    if ( sliced[i].value == "ACE"){
+                      if ( playerDiff_7 == 11 || playerDiff_6 == 11 || playerDiff_5 == 11 || playerDiff_4 == 11 || playerDiff_3 == 11 || playerDiff_2 == 11 || player1Diff_1 == 11){
+                        cardsNeededP1.push(sliced[i])
+                      }
+                    }
+                    if ( sliced[i].value == "ACE"){
+                      if ( playerDiff_7 == 11 || playerDiff_6 == 1 || playerDiff_5 == 1 || playerDiff_4 == 1 || playerDiff_3 == 1 || playerDiff_2 == 1 || player1Diff_1 == 1){
+                        cardsNeededP1.push(sliced[i])
+                      }
+                    }
+                  }
+                  console.log(cardsNeededP1);
+                  
+                  
+                  document.getElementById('yourTotal').innerHTML = "Your current total is:"+player1Sum+"";
+                  document.getElementById('cardsYouNeed').innerHTML = "In order to get at least a total of 15, you would need to draw a card with a value of at least "+player1Diff_1+", but no more than a value of "+playerDiff_7+".  These are the remaining cards you would need to draw that would net you that total:";
+              
+                  for (var i = 0; i < cardsNeededP1.length; i++) {
+                    currentCard = `<img style="width:60px;height:75px;" src=${cardsNeededP1[i].images.png} />`;
+                    document.getElementById('cardsNeeded').innerHTML += currentCard;
+                  }
+              
+                  let percent1 = Math.round((fifteen/iteration)*100)+"%";
+                  let percent2 = Math.round((sixteen/iteration)*100)+"%";
+                  let percent3 = Math.round((seventeen/iteration)*100)+"%";
+                  let percent4 = Math.round((eighteen/iteration)*100)+"%";
+                  let percent5 = Math.round((nineteen/iteration)*100)+"%";
+                  let percent6 = Math.round((twenty/iteration)*100)+"%";
+                  let percent7 = Math.round((twentyone/iteration)*100)+"%";
+              
+                  let totalPercent = Math.round((fifteen/iteration)*100)+Math.round((sixteen/iteration)*100)+Math.round((seventeen/iteration)*100)+Math.round((eighteen/iteration)*100)+Math.round((nineteen/iteration)*100)+Math.round((twenty/iteration)*100)+Math.round((twentyone/iteration)*100);
+                  document.getElementById('totalPercent').innerHTML = "Total probability of success: "+totalPercent+"%";
+                  let table1 = `
+                  <table>
+                  <tr>
+                  <th>chance of getting 15: </th><td>${percent1}</td>
+                  </tr>
+                  <tr>
+                  <th>chance of getting 16: </th><td>${percent2}</td>
+                  </tr>
+                  <tr>
+                  <th>chance of getting 17: </th><td>${percent3}</td>
+                  </tr>
+                  <tr>
+                  <th>chance of getting 18: </th><td>${percent4}</td>
+                  </tr>
+                  <tr>
+                  <th>chance of getting 19: </th><td>${percent5}</td>
+                  </tr>
+                  <tr>
+                  <th>chance of getting 20: </th><td>${percent6}</td>
+                  </tr>
+                  <tr>
+                  <th>chance of getting 21: </th><td>${percent7}</td>
+                  </tr>
+                  </table>`;
+              
+                  document.getElementById('table').innerHTML = table1;
+              }
+              
+              
+      })
+    })
+  })
+})
+    
+});
+    
+    </script>
+  </head>
+  <body>
+    <button id="button">start game</button>
+    <div style="display:flex;flex-flow:row wrap;justify-content:space-around;align-items:center;width:100%;height:100%;" id="playingCards">
+    <div id="yourCards" style="display:flex;flex-flow:column wrap;justify-content:space-around;align-items:center;height:100%;">
+    <h1>Your Cards</h1>
+    <div style="display:flex;flex-flow:row wrap;justify-content:space-around;align-items:center;height:100%;" id="yourActualCards"></div>
+    <h3 id="yourTotal"></h3>
+    <h3 id="cardsYouNeed"></h3>
+    <div id="cardsNeeded"></div>
+    <div style="display:flex;flex-flow:row wrap;justify-content:space-around;align-items:center;height:100%;">
+    <div id="table"></div>
+    <h3 style="margin-left:20px;" id="totalPercent"></h3>
+  </div>
+  <h3 id="opp1" > </h3>
+  <h3 id="oppPercent" > </h3>
+  <h3 id="oppDraw" > </h3>
+    </div>
+    
+    <div id="hisCards" style="display:flex;flex-flow:column wrap;justify-content:space-around;align-items:center;height:100%;">
+    <h1>His Cards</h1>
+    <div style="display:flex;flex-flow:row wrap;justify-content:space-around;align-items:center;height:100%;" id="hisActualCards"></div>
+    </div>
+    
+    
+    </div>
+  </body>
+</html>
