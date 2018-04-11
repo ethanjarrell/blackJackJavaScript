@@ -24,10 +24,10 @@
 
               response.json().then(function(data) {
                 let firstDeal = data.cards;
-                let card1P1 = `<img src="${firstDeal[0].images.png}" />`;
-                let card2P1 = `<img src="${firstDeal[1].images.png}" />`;
-                let card1P2 = `<img src="${firstDeal[2].images.png}" />`;
-                let card2P2 = `<img src="${firstDeal[3].images.png}" />`;
+                let card1P1 = `<img style="width:95px;height:115px;" src="${firstDeal[0].images.png}" />`;
+                let card2P1 = `<img style="width:75px;height:95px;" src="${firstDeal[1].images.png}" />`;
+                let card1P2 = `<img style="width:95px;height:115px;" src="${firstDeal[2].images.png}" />`;
+                let card2P2 = `<img style="width:75px;height:95px;" src="${firstDeal[3].images.png}" />`;
                 document.getElementById('yourActualCards').innerHTML += card1P1;
                 document.getElementById('yourActualCards').innerHTML += card1P2;
                 document.getElementById('hisActualCards').innerHTML += card2P1;
@@ -194,10 +194,10 @@
                   
                   
                   document.getElementById('yourTotal').innerHTML = "Your current total is:"+player1Sum+"";
-                  document.getElementById('cardsYouNeed').innerHTML = "In order to get at least a total of 15, you would need to draw a card with a value of at least "+player1Diff_1+", but no more than a value of "+playerDiff_7+".  These are the remaining cards you would need to draw that would net you that total:";
+                  document.getElementById('cardsYouNeed').innerHTML = "In order to get at least a total of 15, you would need to draw a card with a value of at least "+player1Diff_1+", but no more than a value of "+playerDiff_7+".  To the left are the remaining cards that would net you at least 15.";
               
                   for (var i = 0; i < cardsNeededP1.length; i++) {
-                    currentCard = `<img style="width:60px;height:75px;" src=${cardsNeededP1[i].images.png} />`;
+                    currentCard = `<img style="width:45px;height:60px;" src=${cardsNeededP1[i].images.png} />`;
                     document.getElementById('cardsNeeded').innerHTML += currentCard;
                   }
               
@@ -250,26 +250,53 @@
     </script>
   </head>
   <body>
-    <button id="button">start game</button>
-    <div style="display:flex;flex-flow:row wrap;justify-content:space-around;align-items:center;width:100%;height:100%;" id="playingCards">
-    <div id="yourCards" style="display:flex;flex-flow:column wrap;justify-content:space-around;align-items:center;height:100%;">
+    <div style="display:flex;flex-flow:column nowrap;width:100%;height:100vh;">
+    
+    <div style="display:flex;justify-content:flex-start;flex-flow:row nowrap;width:100%;height:40vh;">
+      <div style="display:flex;flex-flow:column nowrap;width:20%;justify-content:center;align-items:center;">
+      <h1>Dealer's Cards</h1>
+      <div style="display:flex;flex-flow:row wrap;justify-content:space-around;align-items:center;height:100%;" id="hisActualCards"></div>
+      </div>
+      <div style="display:flex;flex-flow:column nowrap;width:20%;justify-content:center;align-items:center;">
+        <h3 id="opp1" > </h3>
+        <h3 id="oppPercent" > </h3>
+        <h3 id="oppDraw" > </h3>
+      </div>
+    </div>
+    <div style="display:flex;flex-flow:row nowrap;width:100%;height:20vh;">
+    </div>
+    <div style="display:flex;flex-flow:row nowrap;justify-content:flex-end;width:100%;height:40vh;">
+      
+      <div style="display:flex;flex-flow:row wrap;justify-content:space-between;align-items:center;margin-right:20px;margin-left20px;width:30%;" id="cardsNeeded"></div>
+    <div style="display:flex;flex-flow:column nowrap;width:30%;justify-content:center;align-items:center;">
+      <h3 id="yourTotal"></h3>
+      <h3 id="cardsYouNeed"></h3>
+    </div>
+    
+    <div style="display:flex;flex-flow:column nowrap;width:20%;justify-content:center;align-items:center;">
+      <div style="display:flex;flex-flow:row wrap;justify-content:space-around;align-items:center;height:100%;">
+      <div id="table"></div>
+      <h3 style="margin-left:20px;" id="totalPercent"></h3>
+    </div>
+    </div>
+    <div style="display:flex;flex-flow:column nowrap;width:40%;justify-content:center;align-items:center;">
     <h1>Your Cards</h1>
     <div style="display:flex;flex-flow:row wrap;justify-content:space-around;align-items:center;height:100%;" id="yourActualCards"></div>
-    <h3 id="yourTotal"></h3>
-    <h3 id="cardsYouNeed"></h3>
-    <div id="cardsNeeded"></div>
-    <div style="display:flex;flex-flow:row wrap;justify-content:space-around;align-items:center;height:100%;">
-    <div id="table"></div>
-    <h3 style="margin-left:20px;" id="totalPercent"></h3>
   </div>
-  <h3 id="opp1" > </h3>
-  <h3 id="oppPercent" > </h3>
-  <h3 id="oppDraw" > </h3>
+    </div>
+    
+  </div>
+    
+    <div style="display:flex;flex-flow:row wrap;justify-content:space-around;align-items:center;width:100%;height:100%;" id="playingCards">
+    <div id="yourCards" style="display:flex;flex-flow:column wrap;justify-content:space-around;align-items:center;height:100%;">
+    
+  
+    
+  
     </div>
     
     <div id="hisCards" style="display:flex;flex-flow:column wrap;justify-content:space-around;align-items:center;height:100%;">
-    <h1>His Cards</h1>
-    <div style="display:flex;flex-flow:row wrap;justify-content:space-around;align-items:center;height:100%;" id="hisActualCards"></div>
+    
     </div>
     
     
